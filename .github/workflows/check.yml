@@ -1,0 +1,102 @@
+name: Three OS CLI and desktop checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  cli:
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            target: aarch64-apple-darwin
+            binary: shugo
+          - os: windows-2022
+            target: x86_64-pc-windows-msvc
+            binary: shugo.exe
+          - os: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
+            binary: shugo
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - run: cargo test --locked --manifest-path src-tauri/Cargo.toml --no-default-features --target ${{ matrix.target }} --lib --bin shugo --test cli
+      - run: cargo build --locked --release --manifest-path src-tauri/Cargo.toml --no-default-features --target ${{ matrix.target }} --bin shugo
+      - run: node scripts/packaging-smoke.mjs cli src-tauri/target/${{ matrix.target }}/release/${{ matrix.binary }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shugo-cli-${{ matrix.target }}
+          path: src-tauri/target/${{ matrix.target }}/release/${{ matrix.binary }}
+          if-no-files-found: error
+          retention-days: 14
+  source-archive:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/test-source-archive.py
+      - run: python scripts/source-archive.py . shugo-source.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shugo-source-allowlist
+          path: shugo-source.zip
+          if-no-files-found: error
+          retention-days: 14
+  desktop:
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            target: aarch64-apple-darwin
+            platform: macos
+          - os: windows-2022
+            target: x86_64-pc-windows-msvc
+            platform: windows
+          - os: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
+            platform: linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+          components: clippy
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev librsvg2-dev libayatana-appindicator3-dev patchelf libfuse2t64 rpm
+      - run: npm ci
+      - run: npm run build
+      - run: cargo test --locked --manifest-path src-tauri/Cargo.toml --target ${{ matrix.target }} --lib
+      - run: cargo clippy --locked --manifest-path src-tauri/Cargo.toml --target ${{ matrix.target }} --all-targets -- -D warnings
+      - run: npm run tauri build -- --target ${{ matrix.target }}
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: '1'
+      - run: node scripts/packaging-smoke.mjs bundle ${{ matrix.platform }} src-tauri/target/${{ matrix.target }}/release/bundle
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shugo-desktop-${{ matrix.target }}-unsigned-test
+          path: src-tauri/target/${{ matrix.target }}/release/bundle/
+          if-no-files-found: error
+          retention-days: 14

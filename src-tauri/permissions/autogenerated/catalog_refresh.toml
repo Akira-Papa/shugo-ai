@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-catalog-refresh"
+description = "Enables the catalog_refresh command without any pre-configured scope."
+commands.allow = ["catalog_refresh"]
+
+[[permission]]
+identifier = "deny-catalog-refresh"
+description = "Denies the catalog_refresh command without any pre-configured scope."
+commands.deny = ["catalog_refresh"]

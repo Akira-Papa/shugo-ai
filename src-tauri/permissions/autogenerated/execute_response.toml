@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-execute-response"
+description = "Enables the execute_response command without any pre-configured scope."
+commands.allow = ["execute_response"]
+
+[[permission]]
+identifier = "deny-execute-response"
+description = "Denies the execute_response command without any pre-configured scope."
+commands.deny = ["execute_response"]

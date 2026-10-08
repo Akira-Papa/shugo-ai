@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-accept-baseline"
+description = "Enables the accept_baseline command without any pre-configured scope."
+commands.allow = ["accept_baseline"]
+
+[[permission]]
+identifier = "deny-accept-baseline"
+description = "Denies the accept_baseline command without any pre-configured scope."
+commands.deny = ["accept_baseline"]

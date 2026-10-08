@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-revoke-response-policy"
+description = "Enables the revoke_response_policy command without any pre-configured scope."
+commands.allow = ["revoke_response_policy"]
+
+[[permission]]
+identifier = "deny-revoke-response-policy"
+description = "Denies the revoke_response_policy command without any pre-configured scope."
+commands.deny = ["revoke_response_policy"]

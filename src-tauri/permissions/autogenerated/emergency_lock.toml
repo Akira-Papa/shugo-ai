@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-emergency-lock"
+description = "Enables the emergency_lock command without any pre-configured scope."
+commands.allow = ["emergency_lock"]
+
+[[permission]]
+identifier = "deny-emergency-lock"
+description = "Denies the emergency_lock command without any pre-configured scope."
+commands.deny = ["emergency_lock"]

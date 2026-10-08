@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-analysis-cancel"
+description = "Enables the analysis_cancel command without any pre-configured scope."
+commands.allow = ["analysis_cancel"]
+
+[[permission]]
+identifier = "deny-analysis-cancel"
+description = "Denies the analysis_cancel command without any pre-configured scope."
+commands.deny = ["analysis_cancel"]

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-cloud-enable"
+description = "Enables the cloud_enable command without any pre-configured scope."
+commands.allow = ["cloud_enable"]
+
+[[permission]]
+identifier = "deny-cloud-enable"
+description = "Denies the cloud_enable command without any pre-configured scope."
+commands.deny = ["cloud_enable"]

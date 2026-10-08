@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-set-response-policy"
+description = "Enables the set_response_policy command without any pre-configured scope."
+commands.allow = ["set_response_policy"]
+
+[[permission]]
+identifier = "deny-set-response-policy"
+description = "Denies the set_response_policy command without any pre-configured scope."
+commands.deny = ["set_response_policy"]
